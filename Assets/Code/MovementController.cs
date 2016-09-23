@@ -36,6 +36,7 @@ namespace Runner
                 if(colliders[i].gameObject != gameObject)
                 {
                     _isGrounded = true;
+                    _hasJumped = false;
                 }
             }
 
@@ -52,16 +53,17 @@ namespace Runner
                 _rigidbody.velocity = new Vector2(move * _speed, _rigidbody.velocity.y);
             }
 
-            if (!_isGrounded && jump && _hasJumped)
+            if (jump && !_isGrounded && _hasJumped)
             {
+                _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0);
                 _rigidbody.AddForce(new Vector2(0, _jumpForce));
                 _hasJumped = false;
             }
 
             // Should we jump?
-            if (jump && (_isGrounded || !_hasJumped))
+            if (jump && _isGrounded)
             {
-                _hasJumped = !_isGrounded;
+                _hasJumped = true;
                 _isGrounded = false;
                 _animator.SetBool(GroundedAnimationName, _isGrounded);
                 _rigidbody.AddForce(new Vector2(0, _jumpForce));

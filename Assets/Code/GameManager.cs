@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 namespace Runner
@@ -6,13 +7,14 @@ namespace Runner
     public class GameManager : MonoBehaviour
     {
         #region Statics
+        private static bool _isQuitting = false;
         private static GameManager _instance;
 
         public static GameManager Instance
         {
             get
             {
-                if(_instance == null)
+                if(_instance == null && !_isQuitting)
                 {
                     _instance = FindObjectOfType<GameManager>();
                     if(_instance == null)
@@ -30,6 +32,8 @@ namespace Runner
         private Camera _mainCamera;
         private CameraFollow _cameraFollow;
         private GUIManager _guiManager;
+        private int _points = 0;
+        
 
         public GUIManager GUIManager
         {
@@ -49,7 +53,7 @@ namespace Runner
             }
         }
 
-      private void Awake()
+        private void Awake()
       {
         if(_instance == null)
             {
@@ -62,10 +66,16 @@ namespace Runner
             }
       }
 
+        private void OnApplicationQuit()
+        {
+            _isQuitting = true;
+        }
+
         private void Init()
         {
             _mainCamera = Camera.main;
             _cameraFollow = _mainCamera.GetComponent<CameraFollow>();
+            Pause(true);
         }
 
         public void Pause(bool pause)
@@ -80,11 +90,27 @@ namespace Runner
             }
         }
 
-      public void GameOver()
+        public void GameOver()
       {
             Pause(true);
-            GUIManager.ShowMessage("Game Over!");
+            GUIManager.GameOver();
             _cameraFollow.GameOver();
       }
+
+        public void AddPoints(int points)
+        {
+            _points += points;
+            GUIManager.UpdatePoints(_points);
+        }
+
+        public void StartGame()
+        {
+            Pause(false);
+        }
+
+        public void OnNewGamePressed()
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }

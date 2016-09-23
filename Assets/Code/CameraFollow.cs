@@ -7,10 +7,20 @@ namespace Runner
     {
         [SerializeField] private Transform _player;
 
+        private bool follow = true; 
+
         // Update is called once per frame
         void Update()
         {
-            transform.position = new Vector3(_player.position.x + 6, 0, transform.position.z);
+            if (follow)
+            {
+                transform.position = new Vector3(_player.position.x + 6, 0, transform.position.z);
+            }
+        }
+
+        public void GameOver()
+        {
+            follow = false;
         }
     }
 }

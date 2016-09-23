@@ -59,12 +59,13 @@ namespace Runner
             }
 
             // Should we jump?
-            if (_isGrounded && jump && !_hasJumped)
+            if (jump && (_isGrounded || !_hasJumped))
             {
+                _hasJumped = !_isGrounded;
                 _isGrounded = false;
                 _animator.SetBool(GroundedAnimationName, _isGrounded);
                 _rigidbody.AddForce(new Vector2(0, _jumpForce));
-                _hasJumped = true;
+                
             } 
         }
     }
